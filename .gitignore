@@ -1,1 +1,4 @@
 # List of untracked files to ignore
+
+# Ignore MATLAB-generated local backup files
+*.asv
