@@ -99,18 +99,25 @@ sensors{6} = radarDetectionGenerator('SensorIndex', 6, 'Height', 0.2, 'Yaw', -60
 
 
 
-%% TODO*
+%% 
 %Change the Tracker Parameters and explain the reasoning behind selecting
-%the final values. You can find more about parameters here: https://www.mathworks.com/help/driving/ref/multiobjecttracker-system-object.html
+%the final values. You can find more about parameters here: 
+% https://www.mathworks.com/help/driving/ref/multiobjecttracker-system-object.html
+
+% Tracking is done in 2-D. Although the sensors return measurements in 3-D, 
+% the motion itself is confined to the horizontal plane, so there is no 
+% need to track the height.
 
 tracker = multiObjectTracker('FilterInitializationFcn', @initSimDemoFilter, ...
-    'AssignmentThreshold', 30, 'ConfirmationParameters', [4 5], 'NumCoastingUpdates', 5);
+                             'AssignmentThreshold', 30, ...
+                             'ConfirmationParameters', [4 5], ...
+                             'NumCoastingUpdates', 5);
+
 positionSelector = [1 0 0 0; 0 0 1 0]; % Position selector
 velocitySelector = [0 1 0 0; 0 0 0 1]; % Velocity selector
 
-% Create the display and return a handle to the bird's-eye plot
+% Create the display and return a handle to the bird's-eye plot (BEP)
 BEP = createDemoDisplay(egoCar, sensors);
-
 
 
 %% Simulate the Scenario
