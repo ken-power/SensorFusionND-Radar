@@ -19,8 +19,8 @@ Function | Criteria | Specification | Status
 **FMCW Waveform Design** | Using the given system requirements, design a FMCW waveform. Find its Bandwidth (B), chirp time (Tchirp) and slope of the chirp. | For given system requirements the calculated slope should be around 2e13 | [DONE](#FMCW-Waveform-Design)
 **Simulation Loop** | Simulate Target movement and calculate the beat or mixed signal for every timestamp. |A beat signal should be generated such that once range FFT implemented, it gives the correct range i.e the initial position of target assigned with an error margin of +/- 10 meters. | [DONE](#Simulation-Loop)
 **Range FFT (1st FFT)** | Implement the Range FFT on the Beat or Mixed Signal and plot the result. | A correct implementation should generate a peak at the correct range, i.e the initial position of target assigned with an error margin of +/- 10 meters. | [DONE](#Range-FFT)
-**2D CFAR** | Implement the 2D CFAR process on the output of 2D FFT operation, i.e the Range Doppler Map. | The 2D CFAR processing should be able to suppress the noise and separate the target signal. The output should match the image shared in walkthrough. | [DONE](#2D-CFAR-implementation)
-**2D CFAR** | Create a CFAR README File | In a README file, write brief explanations for the following: <ul><li>Implementation steps for the 2D CFAR process.</li> <li>Selection of Training, Guard cells and offset. </li> <li>Steps taken to suppress the non-thresholded cells at the edges.</li> </ul> | [IN PROGRESS](#PRoject-Report)
+**2D CFAR** | Implement the 2D CFAR process on the output of 2D FFT operation, i.e the Range Doppler Map. | The 2D CFAR processing should be able to suppress the noise and separate the target signal. The output should match the image shared in walkthrough. | [DONE](#2D-CFAR-Implementation)
+**2D CFAR** | Create a CFAR README File | In a README file, write brief explanations for the following: <ul><li>Implementation steps for the 2D CFAR process.</li> <li>Selection of Training, Guard cells and offset. </li> <li>Steps taken to suppress the non-thresholded cells at the edges.</li> </ul> | [DONE](#PRoject-Report)
 
 
 # Source Code
@@ -110,7 +110,7 @@ for i=1:length(t)
 end
 ```
 
-## Range FFT (1st FFT)
+## Range FFT
 
 The steps for the 1st FFT operation are as follows:
 * Implement the 1D FFT on the Mixed Signal
@@ -160,6 +160,8 @@ axis ([0 200 0 1]);
 The first FFT output is shown below. There is a peak at the initial position of the target located at 110 metres.
 ![](results/project/Fig1.png)
 
+## 2D CFAR Implementation
+
 ## Range Doppler Map
 The next task is to implement the CFAR on this Range Doppler Map. This is shown in the following code, where the Range Doppler Map is represented by the variable `RDM`. 
 
@@ -199,13 +201,6 @@ The 2nd FFT generates a Range Doppler Map as seen in the image below.
 
 ![](results/project/Fig2.png)
 
-
-## Implementation steps for the 2D CFAR process
-
-
-
-
-## CFAR Implementation
 
 ### Selection of Training cells, Guard cells, and offset
 
