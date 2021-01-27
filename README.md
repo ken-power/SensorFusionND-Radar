@@ -162,7 +162,7 @@ The first FFT output is shown below. There is a peak at the initial position of 
 
 ## 2D CFAR Implementation
 
-## Range Doppler Map
+### Range Doppler Map
 The next task is to implement the CFAR on this Range Doppler Map. This is shown in the following code, where the Range Doppler Map is represented by the variable `RDM`. 
 
 ```matlab
@@ -225,6 +225,7 @@ Gd = 4;
 offset = 1.4;
 
 ```
+### Implementation steps for the 2D CFAR process
 
 ```matlab
 
