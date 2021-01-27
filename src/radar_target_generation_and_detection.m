@@ -29,6 +29,9 @@ B_sweep = c/(2*rangeResolution);   % Bandwidth (B)
 T_chirp = 5.5*2*maxRange/c;        % Chirp time
 slope = B_sweep/T_chirp;           % Slope of the FMCW
 
+disp("slope = ");
+disp(slope);
+
 % Operating carrier frequency of Radar 
 fc = 77e9;             %carrier freq
                                                           

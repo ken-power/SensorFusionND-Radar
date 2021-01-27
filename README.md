@@ -122,24 +122,11 @@ The 2nd FFT generates a Range Doppler Map as seen in the image below.
 
 ## Implementation steps for the 2D CFAR process
 
-## Radar specifications
-The sensor fusion design for different driving scenarios requires different system configurations from a Radar. In this project, we design a Radar based on the following system requirements:
-
-Requirement | Value
-:--- | ---:
-Frequency | 77 GHz
-Range resolution | 1 m
-Max range | 200 m
-Max velocity | 70 m/s
-Velocity resolution | 3 m/s
-
-Max Range and Range Resolution will be considered here for waveform design.
-
 
 
 ### FMCW Waveform Design
-We need to provide the initial range and velocity of the target. Range cannot exceed the max value of 200m and velocity can be any value in the range of -70 to + 70 m/s.
 
+Using the given system requirements, design a FMCW waveform. Find its Bandwidth (B), chirp time (Tchirp) and slope of the chirp. The specifications and MATLAB implementation are shown here:
 
 ```matlab
 %% Radar Specifications 
@@ -155,6 +142,7 @@ rangeResolution = 1;
 maxVelocity = 100;
 ```
 
+This code defines the target's initial position and velocity:
 
 ```matlab
 %% User Defined Range and Velocity of target
@@ -164,15 +152,15 @@ initialPosition = 110;
 velocity = -20;
 ```
 
-The sweep bandwidth is determined according to the range resolution and the sweep slope is calculated using both sweep bandwidth and sweep time.
+The _sweep bandwidth_ is determined according to the _range resolution_ and the _sweep slope_ is calculated using both _sweep bandwidth_ and _sweep time_.
 
 _Bandwidth(Bsweep) = speedoflight / (2 * rangeResolution)_
 
-* The sweep time can be computed based on the time needed for the signal to travel the unambiguous maximum range. In general, for an FMCW radar system, the sweep time should be at least 5 to 6 times the round trip time. This example uses a factor of 5.5.
+The _sweep time_ can be computed based on the time needed for the signal to travel the unambiguous maximum range. In general, for an FMCW radar system, the sweep time should be at least 5 to 6 times the round trip time. Here we use a factor of 5.5:
 
 _Tchirp = 5.5 * 2 * Rmax / c_
 
-Giving the slope of the chirp signal
+We can now calculate the slope of the chirp signal:
 
 _Slope = Bandwidth / Tchirp_
 
@@ -188,6 +176,8 @@ B_sweep = c / (2*range_resolution);   % Bandwidth (B)
 T_chirp = 5.5*2*max_range / c;        % Chirp time
 slope = B_sweep / T_chirp;            % Slope of the FMCW
 ```
+
+For the given system requirements the calculated slope should be around 2e13. The actual calculated slope is `2.0455e+13`, which we can verify by outputting the value using the `disp` function: `disp(slope);`
 
 ## Simulation Loop
 The simulation loop simulates target movement and calculate the beat or mixed signal for every timestamp. A beat signal is generated such that once range FFT is implemented, it gives the correct range i.e the initial position of target assigned with an error margin of +/- 10 meters.
@@ -215,8 +205,9 @@ for i=1:length(t)
 end
 ```
 
+## CFAR Implementation
 
-## Selection of Training cells, Guard cells, and offset
+### Selection of Training cells, Guard cells, and offset
 
 ```matlab
 %% CFAR implementation
@@ -237,6 +228,10 @@ Gd = 4;
 
 % offset the threshold by SNR value in dB
 offset = 1.4;
+
+```
+
+```matlab
 
 % Create a vector to store noise_level for each iteration on training cells
 noise_level = zeros(1,1);
