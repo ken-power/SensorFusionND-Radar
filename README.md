@@ -29,6 +29,86 @@ The main source code is in the MATLAB file [radar_target_generation_and_detectio
 
 # Project Report
 
+### FMCW Waveform Design
+
+Using the given system requirements, design a FMCW waveform. Find its Bandwidth (B), chirp time (Tchirp) and slope of the chirp. The specifications and MATLAB implementation are shown here:
+
+```matlab
+%% Radar Specifications 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Frequency of operation = 77GHz
+% Max Range = 200m
+% Range Resolution = 1 m
+% Max Velocity = 100 m/s
+%%%%%%%%%%%%%%%%%%%%%%%%%%%
+c = 3e8; %speed of light
+maxRange = 200;
+rangeResolution = 1;
+maxVelocity = 100;
+```
+
+This code defines the target's initial position and velocity:
+
+```matlab
+%% User Defined Range and Velocity of target
+% define the target's initial position and velocity. Note : Velocity
+% remains contant
+initialPosition = 110;
+velocity = -20;
+```
+
+The _sweep bandwidth_ is determined according to the _range resolution_ and the _sweep slope_ is calculated using both _sweep bandwidth_ and _sweep time_.
+
+_Bandwidth(Bsweep) = speedoflight / (2 * rangeResolution)_
+
+The _sweep time_ can be computed based on the time needed for the signal to travel the unambiguous maximum range. In general, for an FMCW radar system, the sweep time should be at least 5 to 6 times the round trip time. Here we use a factor of 5.5:
+
+_Tchirp = 5.5 * 2 * Rmax / c_
+
+We can now calculate the slope of the chirp signal:
+
+_Slope = Bandwidth / Tchirp_
+
+These are implemented in MATLAB as follows:
+
+```matlab
+%% FMCW Waveform Generation
+
+% Design the FMCW waveform by giving the specs of each of its parameters.
+% Calculate the Bandwidth (B), Chirp Time (Tchirp) and Slope (slope) of the FMCW
+% chirp using the requirements above.
+B_sweep = c / (2*range_resolution);   % Bandwidth (B)
+T_chirp = 5.5*2*max_range / c;        % Chirp time
+slope = B_sweep / T_chirp;            % Slope of the FMCW
+```
+
+For the given system requirements the calculated slope should be around 2e13. The actual calculated slope is `2.0455e+13`, which we can verify by outputting the value using the `disp` function: `disp(slope);`
+
+## Simulation Loop
+The simulation loop simulates target movement and calculate the beat or mixed signal for every timestamp. A beat signal is generated such that once range FFT is implemented, it gives the correct range i.e the initial position of target assigned with an error margin of +/- 10 meters.
+
+The following MATLAB code shows the simulation loop:
+
+```matlab
+%% Signal generation and Moving Target simulation
+% Running the radar scenario over the time. 
+
+for i=1:length(t) 
+    
+    %For each time stamp update the Range of the Target for constant velocity. 
+    
+    %For each time sample we need update the transmitted and
+    %received signal. 
+    Tx(i) = cos(2 * pi * (fc * t(i) + slope * (t(i)^2)/2));
+    Rx(i)  = cos(2 * pi * (fc * (t(i) - td(i)) + slope * ((t(i)-td(i))^2)/2));
+    
+    %Now by mixing the Transmit and Receive generate the beat signal
+    %This is done by element wise matrix multiplication of Transmit and
+    %Receiver Signal
+    Mix(i) = Tx(i) .* Rx(i);
+    
+end
+```
 
 ## Range FFT (1st FFT)
 
@@ -124,86 +204,6 @@ The 2nd FFT generates a Range Doppler Map as seen in the image below.
 
 
 
-### FMCW Waveform Design
-
-Using the given system requirements, design a FMCW waveform. Find its Bandwidth (B), chirp time (Tchirp) and slope of the chirp. The specifications and MATLAB implementation are shown here:
-
-```matlab
-%% Radar Specifications 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Frequency of operation = 77GHz
-% Max Range = 200m
-% Range Resolution = 1 m
-% Max Velocity = 100 m/s
-%%%%%%%%%%%%%%%%%%%%%%%%%%%
-c = 3e8; %speed of light
-maxRange = 200;
-rangeResolution = 1;
-maxVelocity = 100;
-```
-
-This code defines the target's initial position and velocity:
-
-```matlab
-%% User Defined Range and Velocity of target
-% define the target's initial position and velocity. Note : Velocity
-% remains contant
-initialPosition = 110;
-velocity = -20;
-```
-
-The _sweep bandwidth_ is determined according to the _range resolution_ and the _sweep slope_ is calculated using both _sweep bandwidth_ and _sweep time_.
-
-_Bandwidth(Bsweep) = speedoflight / (2 * rangeResolution)_
-
-The _sweep time_ can be computed based on the time needed for the signal to travel the unambiguous maximum range. In general, for an FMCW radar system, the sweep time should be at least 5 to 6 times the round trip time. Here we use a factor of 5.5:
-
-_Tchirp = 5.5 * 2 * Rmax / c_
-
-We can now calculate the slope of the chirp signal:
-
-_Slope = Bandwidth / Tchirp_
-
-These are implemented in MATLAB as follows:
-
-```matlab
-%% FMCW Waveform Generation
-
-% Design the FMCW waveform by giving the specs of each of its parameters.
-% Calculate the Bandwidth (B), Chirp Time (Tchirp) and Slope (slope) of the FMCW
-% chirp using the requirements above.
-B_sweep = c / (2*range_resolution);   % Bandwidth (B)
-T_chirp = 5.5*2*max_range / c;        % Chirp time
-slope = B_sweep / T_chirp;            % Slope of the FMCW
-```
-
-For the given system requirements the calculated slope should be around 2e13. The actual calculated slope is `2.0455e+13`, which we can verify by outputting the value using the `disp` function: `disp(slope);`
-
-## Simulation Loop
-The simulation loop simulates target movement and calculate the beat or mixed signal for every timestamp. A beat signal is generated such that once range FFT is implemented, it gives the correct range i.e the initial position of target assigned with an error margin of +/- 10 meters.
-
-The following MATLAB code shows the simulation loop:
-
-```matlab
-%% Signal generation and Moving Target simulation
-% Running the radar scenario over the time. 
-
-for i=1:length(t) 
-    
-    %For each time stamp update the Range of the Target for constant velocity. 
-    
-    %For each time sample we need update the transmitted and
-    %received signal. 
-    Tx(i) = cos(2 * pi * (fc * t(i) + slope * (t(i)^2)/2));
-    Rx(i)  = cos(2 * pi * (fc * (t(i) - td(i)) + slope * ((t(i)-td(i))^2)/2));
-    
-    %Now by mixing the Transmit and Receive generate the beat signal
-    %This is done by element wise matrix multiplication of Transmit and
-    %Receiver Signal
-    Mix(i) = Tx(i) .* Rx(i);
-    
-end
-```
 
 ## CFAR Implementation
 
