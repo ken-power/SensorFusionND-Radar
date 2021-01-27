@@ -95,16 +95,16 @@ The following MATLAB code shows the simulation loop:
 
 for i=1:length(t) 
     
-    %For each time stamp update the Range of the Target for constant velocity. 
+    % For each time stamp update the Range of the Target for constant velocity. 
     
-    %For each time sample we need update the transmitted and
-    %received signal. 
+    % For each time sample we need update the transmitted and
+    % received signal. 
     Tx(i) = cos(2 * pi * (fc * t(i) + slope * (t(i)^2)/2));
     Rx(i)  = cos(2 * pi * (fc * (t(i) - td(i)) + slope * ((t(i)-td(i))^2)/2));
     
-    %Now by mixing the Transmit and Receive generate the beat signal
-    %This is done by element wise matrix multiplication of Transmit and
-    %Receiver Signal
+    % Now by mixing the Transmit and Receive generate the beat signal
+    % This is done by element wise matrix multiplication of Transmit and
+    % Receiver Signal
     Mix(i) = Tx(i) .* Rx(i);
     
 end
